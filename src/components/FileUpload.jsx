@@ -8,6 +8,7 @@ const FileUpload = () => {
   const fileRef = useRef(null);
   const [isUploaded, setIsUploaded] = useState(false);
   const [uploadedFilesData, setUploadedFilesData] = useState([]);
+  const copyRef = useRef(null);
 
   useEffect(() => {
     if (selectedFile === null) return;
@@ -82,6 +83,13 @@ const FileUpload = () => {
       };
       setUploadedFilesData((prevState) => [...prevState, newFileData]);
     });
+  };
+
+  const copyDownloadUrl = (fileName) => {
+    const file = uploadedFilesData.find((file) => file.name === fileName);
+    navigator.clipboard.writeText(file.downloadURL);
+
+    copyRef.current.innerText = "Copied!";
   };
 
   return (
@@ -162,14 +170,25 @@ const FileUpload = () => {
                 <span className="text-gray-500 font-medium text-md">
                   {file.type}
                 </span>
-                <a
-                  href={file.downloadURL}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-blue-500 font-medium text-md"
-                >
-                  Download
-                </a>
+                <div className="flex justify-between">
+                  <a
+                    href={file.downloadURL}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-500 font-medium text-md"
+                  >
+                    Download
+                  </a>
+                  {/* copy download url */}
+                  <div
+                    type="button"
+                    className="text-blue-500 font-medium text-md cursor-pointer"
+                    onClick={() => copyDownloadUrl(file.name)}
+                    ref={copyRef}
+                  >
+                    Copy URL
+                  </div>
+                </div>
               </li>
             ))}
           </ul>
